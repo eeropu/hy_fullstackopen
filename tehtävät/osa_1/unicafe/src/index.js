@@ -7,7 +7,7 @@ class App extends React.Component {
     this.state = {
       hyva: 0,
       neutraali: 0,
-      huono: 0
+      huono: 0,
     }
   }
 
@@ -33,11 +33,22 @@ class App extends React.Component {
     }
   }
 
+  keskiarvo = () => {
+    let sum = this.state.hyva - this.state.huono
+    let count = this.state.hyva + this.state.neutraali + this.state.huono
+    return Math.round(sum/count * 10) / 10
+  }
+
+  positiivisia = () => {
+    let result = this.state.hyva / (this.state.hyva + this.state.neutraali + this.state.huono)
+    return Math.round(result * 1000) / 10
+  }
+
   render(){
     return (
       <div>
         <Palautelomake handleClick={this.lisaaPalaute}/>
-        <Statistiikka stats={this.state}/>
+        <Statistiikka stats={this.state} average={this.keskiarvo()} positive={this.positiivisia()}/>
       </div>
     )
   }
@@ -60,6 +71,8 @@ const Statistiikka = (props) => {
       <p>hyvä {hyva}</p>
       <p>neutraali {neutraali}</p>
       <p>huono {huono}</p>
+      <p>keskiarvo {props.average}</p>
+      <p>positiivisia {props.positive}%</p>
     </div>
   )
 }
