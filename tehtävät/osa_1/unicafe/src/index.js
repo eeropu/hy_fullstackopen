@@ -65,16 +65,20 @@ const Palautelomake = ({handleClick}) => (
 
 const Statistiikka = (props) => {
   const {hyva, neutraali, huono} = props.stats
-  return (
-    <div>
-      <h2>statistiikka</h2>
-      <StatRivi nimi='hyva' arvo={hyva}/>
-      <StatRivi nimi='neutraali' arvo={neutraali}/>
-      <StatRivi nimi='huono' arvo={huono}/>
-      <StatRivi nimi='keskiarvo' arvo={props.average}/>
-      <StatRivi nimi='positiivisia' arvo={props.positive}/>
-    </div>
-  )
+  if(hyva + neutraali + huono > 0) {
+    return (
+      <div>
+        <h2>statistiikka</h2>
+        <StatRivi nimi='hyva' arvo={hyva}/>
+        <StatRivi nimi='neutraali' arvo={neutraali}/>
+        <StatRivi nimi='huono' arvo={huono}/>
+        <StatRivi nimi='keskiarvo' arvo={props.average}/>
+        <StatRivi nimi='positiivisia' arvo={props.positive}/>
+      </div>
+    )
+  } else {
+    return <p>Yhtään palautetta ei ole vielä annettu</p>
+  }
 }
 
 const StatRivi = (props) => (<p>{props.nimi} {props.arvo}</p>)
