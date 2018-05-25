@@ -6,7 +6,8 @@ class App extends React.Component {
     super(props)
     this.state = {
       selected: 0,
-      points: []
+      points: [],
+      mostVotes: 0
     }
 
     for (var i = 0; i < anecdotes.length; i++) {
@@ -26,14 +27,28 @@ class App extends React.Component {
     this.setState({
       points: kopio
     })
+    let max = 0
+    let mv = 0 //mv stands for mostVotes
+    for (var i = 0; i < kopio.length; i++) {
+      if(kopio[i] > max){
+        max = kopio[i]
+        mv = i
+      }
+    }
+    this.setState({
+      mostVotes: mv
+    })
   }
 
   render() {
     return (
       <div>
-        {this.props.anecdotes[this.state.selected]} (points: {this.state.points[this.state.selected]})<br/>
+        {anecdotes[this.state.selected]} (points: {this.state.points[this.state.selected]})<br/>
         <button onClick={this.randomAnecdote}>Show new</button>
         <button onClick={this.vote}>Vote</button>
+        <h4>Most voted anecdote:</h4>
+        {anecdotes[this.state.mostVotes]}<br/>
+        it has {this.state.points[this.state.mostVotes]} votes
       </div>
     )
   }
