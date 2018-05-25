@@ -5,7 +5,12 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selected: 0
+      selected: 0,
+      points: []
+    }
+
+    for (var i = 0; i < anecdotes.length; i++) {
+      this.state.points[i] = 0
     }
   }
 
@@ -15,11 +20,20 @@ class App extends React.Component {
     })
   }
 
+  vote = () => {
+    const kopio = [...this.state.points]
+    kopio[this.state.selected] = kopio[this.state.selected] + 1
+    this.setState({
+      points: kopio
+    })
+  }
+
   render() {
     return (
       <div>
-        <button onClick={this.randomAnecdote}>Show new</button><br/>
-        {this.props.anecdotes[this.state.selected]}
+        {this.props.anecdotes[this.state.selected]} (points: {this.state.points[this.state.selected]})<br/>
+        <button onClick={this.randomAnecdote}>Show new</button>
+        <button onClick={this.vote}>Vote</button>
       </div>
     )
   }
