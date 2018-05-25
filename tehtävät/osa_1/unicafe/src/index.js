@@ -12,24 +12,10 @@ class App extends React.Component {
   }
 
   lisaaPalaute = (palaute) => {
-    if(palaute === 'hyvä') {
-      return () => {
-        this.setState({
-          hyva: this.state.hyva + 1
-        })
-      }
-    } else if (palaute === 'neutraali'){
-      return () => {
-        this.setState({
-          neutraali: this.state.neutraali + 1
-        })
-      }
-    } else if (palaute === 'huono'){
-      return () => {
-        this.setState({
-          huono: this.state.huono + 1
-        })
-      }
+    return () => {
+      this.setState({
+        [palaute]: this.state[palaute] + 1
+      })
     }
   }
 
@@ -57,7 +43,7 @@ class App extends React.Component {
 const Palautelomake = ({handleClick}) => (
   <div>
     <h2>anna palautetta</h2>
-    <button onClick={handleClick('hyvä')}>hyvä</button>
+    <button onClick={handleClick('hyva')}>hyvä</button>
     <button onClick={handleClick('neutraali')}>neutraali</button>
     <button onClick={handleClick('huono')}>huono</button>
   </div>
