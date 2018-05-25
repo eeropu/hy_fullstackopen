@@ -68,13 +68,15 @@ const Statistiikka = (props) => {
   return (
     <div>
       <h2>statistiikka</h2>
-      <p>hyvä {hyva}</p>
-      <p>neutraali {neutraali}</p>
-      <p>huono {huono}</p>
-      <p>keskiarvo {props.average}</p>
-      <p>positiivisia {props.positive}%</p>
+      <StatRivi nimi='hyva' arvo={hyva}/>
+      <StatRivi nimi='neutraali' arvo={neutraali}/>
+      <StatRivi nimi='huono' arvo={huono}/>
+      <StatRivi nimi='keskiarvo' arvo={props.average}/>
+      <StatRivi nimi='positiivisia' arvo={props.positive}/>
     </div>
   )
 }
+
+const StatRivi = (props) => (<p>{props.nimi} {props.arvo}</p>)
 
 ReactDOM.render(<App />, document.getElementById('root'));
