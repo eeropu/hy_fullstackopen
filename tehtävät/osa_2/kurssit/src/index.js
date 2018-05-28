@@ -34,6 +34,7 @@ const Kurssi = (props) => (
   <div>
     <Otsikko nimi={props.kurssi.nimi} />
     <Sisalto osat={props.kurssi.osat} />
+    <Tehtavia osat={props.kurssi.osat} />
   </div>
 )
 
@@ -48,5 +49,14 @@ const Sisalto = ({osat}) => (
 )
 
 const Osa = ({osa}) => (<li>{osa.nimi} {osa.tehtavia}</li>)
+
+const Tehtavia = ({osat}) => {
+  const summa = osat.reduce((sum, osa) => sum + osa.tehtavia, 0)
+  return (
+    <p>
+      Yhteensä {summa} tehtävää
+    </p>
+  )
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
