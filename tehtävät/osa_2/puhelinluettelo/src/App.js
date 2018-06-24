@@ -21,6 +21,11 @@ class App extends React.Component {
       name: this.state.newName
     }
 
+    if(this.state.persons.some(this.containsName)){
+      alert('Name already exists!')
+      return
+    }
+
     const persons = this.state.persons.concat(nameToAdd)
 
     this.setState({
@@ -28,6 +33,8 @@ class App extends React.Component {
       newName: ''
     })
   }
+
+  containsName = (person) => person.name === this.state.newName
 
   render() {
 
