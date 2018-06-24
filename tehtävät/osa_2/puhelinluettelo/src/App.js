@@ -21,7 +21,7 @@ class App extends React.Component {
     this.setState({ newNumber: event.target.value })
   }
 
-  search = (event) => {
+  updateSearch = (event) => {
     this.setState({ search: event.target.value })
   }
 
@@ -50,30 +50,58 @@ class App extends React.Component {
 
   render() {
 
-    const filtered = this.state.persons.filter(person => person.name.toLowerCase().includes(this.state.search.toLowerCase()))
-    const persons = filtered.map(person => <li key={person.name}>{person.name}: {person.number}</li>)
+
 
     return (
       <div>
         <h2>Puhelinluettelo</h2>
-        <form onSubmit={this.addPerson}>
-          <div>
-            nimi: <input value={this.state.newName} onChange={this.updateName}/> <br/>
-            numero: <input value={this.state.newNumber} onChange={this.updateNumber}/>
-          </div>
-          <div>
-            <button type="submit">lisää</button>
-          </div>
-        </form>
-        <h2>Haku:</h2>
-        Hae nimellä: <input value={this.state.search} onChange={this.search}/>
-        <h2>Numerot</h2>
-        <ul>
-          {persons}
-        </ul>
+        <AddPerson
+          addPerson={this.addPerson}
+          newName={this.state.newName}
+          updateName={this.updateName}
+          newNumber={this.state.newNumber}
+          updateNumber={this.updateNumber}
+        />
+        <Search search={this.state.search} updateSearch={this.updateSearch}/>
+        <Names persons={this.state.persons} search={this.state.search} />
       </div>
     )
   }
+}
+
+const AddPerson = (props) => {
+  return (
+    <form onSubmit={props.addPerson}>
+      <div>
+        nimi: <input value={props.newName} onChange={props.updateName}/> <br/>
+        numero: <input value={props.newNumber} onChange={props.updateNumber}/>
+      </div>
+      <div>
+        <button type="submit">lisää</button>
+      </div>
+    </form>
+  )
+}
+
+const Search = ({search, updateSearch}) => (
+  <div>
+    <h2>Haku:</h2>
+    Hae nimellä: <input value={search} onChange={updateSearch}/>
+  </div>
+)
+
+const Names = ({persons, search}) => {
+  const filtered = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
+  const data = filtered.map(person => <li key={person.name}>{person.name}: {person.number}</li>)
+
+  return (
+    <div>
+      <h2>Numerot</h2>
+      <ul>
+        {data}
+      </ul>
+    </div>
+  )
 }
 
 export default App
