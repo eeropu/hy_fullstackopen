@@ -48,13 +48,26 @@ class App extends Component {
       return (
         <ul>
           {this.state.showing.map(
-            country => <li key={country.name}>{country.name}</li>
+            country => {
+              return (
+                <li key={country.name}
+                onClick={() => this.nameClicked(country)}>
+                  {country.name}
+                </li>
+              )
+            }
           )}
         </ul>
       )
     } else {
       return <h4>Too many results, please specify!</h4>
     }
+  }
+
+  nameClicked = (country) => {
+    this.setState({
+      showing: [country]
+    })
   }
 
   render() {
@@ -71,7 +84,7 @@ const Search = ({handleSearchChange}) => {
   return (
     <div>
       <h2>Search by country name: </h2>
-      <input type='text' onChange={handleSearchChange} />
+      <input id='searchfield' type='text' onChange={handleSearchChange} />
     </div>
   )
 }
