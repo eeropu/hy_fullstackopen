@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios'
 
 class App extends React.Component {
   constructor(props) {
@@ -11,6 +12,15 @@ class App extends React.Component {
       newNumber: '',
       search: ''
     }
+  }
+
+  componentDidMount(){
+    axios.get('http://localhost:3001/persons')
+      .then(response => {
+        this.setState({
+          persons: response.data
+        })
+      })
   }
 
   updateName = (event) => {
