@@ -1,13 +1,11 @@
 import React from 'react';
-import axios from 'axios'
+import personService from './services/persons.js'
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      persons: [
-        { name: 'Arto Hellas' }
-      ],
+      persons: [],
       newName: '',
       newNumber: '',
       search: ''
@@ -15,10 +13,10 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-    axios.get('http://localhost:3001/persons')
-      .then(response => {
+    personService.getAll()
+      .then(result => {
         this.setState({
-          persons: response.data
+          persons: result
         })
       })
   }
@@ -42,21 +40,21 @@ class App extends React.Component {
       number: this.state.newNumber
     }
 
-    if(this.state.persons.some(this.containsName)){
+    if(this.state.persons.some(person => person.name === this.state.newName)){
       alert('Name already exists!')
       return
     }
 
-    const persons = this.state.persons.concat(nameToAdd)
-
-    this.setState({
-      persons,
-      newName: '',
-      newNumber: ''
-    })
+    personService.create(nameToAdd)
+      .then(result => {
+        this.setState({
+          persons: this.state.persons.concat({
+            name: result.name,
+            number: result.number
+          })
+        })
+      })
   }
-
-  containsName = (person) => person.name === this.state.newName
 
   render() {
 
