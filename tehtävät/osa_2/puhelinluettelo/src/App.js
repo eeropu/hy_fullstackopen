@@ -47,13 +47,27 @@ class App extends React.Component {
 
     personService.create(nameToAdd)
       .then(result => {
+        console.log(result)
         this.setState({
-          persons: this.state.persons.concat({
-            name: result.name,
-            number: result.number
-          })
+          persons: this.state.persons.concat(result)
         })
       })
+  }
+
+  // TODO: Jatka tästä tehtävää 2.16
+  removePerson = (id) => {
+    return (() => {
+      if(window.confirm("Do you really want to delete this person?")){
+        personService.remove(id)
+          .then(result => {
+            console.log(result)
+            console.log('Person with id ' + id + ' was removed from the server')
+            this.setState({
+              persons: this.state.persons.filter(person => person.id !== id)
+            })
+          })
+      }
+    })
   }
 
   render() {
@@ -71,7 +85,11 @@ class App extends React.Component {
           updateNumber={this.updateNumber}
         />
         <Search search={this.state.search} updateSearch={this.updateSearch}/>
-        <Names persons={this.state.persons} search={this.state.search} />
+        <Names
+          persons={this.state.persons}
+          search={this.state.search}
+          removePerson={this.removePerson}
+        />
       </div>
     )
   }
@@ -98,9 +116,16 @@ const Search = ({search, updateSearch}) => (
   </div>
 )
 
-const Names = ({persons, search}) => {
+const Names = ({persons, search, removePerson}) => {
   const filtered = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
-  const data = filtered.map(person => <li key={person.name}>{person.name}: {person.number}</li>)
+  const data = filtered.map(person => {
+    return (
+      <li key={person.name}>
+        {person.name}: {person.number}
+        <button onClick={removePerson(person.id)}>Poista</button>
+      </li>
+    )
+  })
 
   return (
     <div>
