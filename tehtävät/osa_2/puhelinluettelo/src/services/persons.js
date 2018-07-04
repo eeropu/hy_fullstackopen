@@ -10,7 +10,7 @@ const create = (newObject) => {
 }
 
 const update = (id, newObject) => {
-  return axios.put(`${baseUrl}/${id}`, newObject)
+  return axios.put(`${baseUrl}/${id}`, newObject.updateable).then(response => response.data)
 }
 
 const remove = (id) => {

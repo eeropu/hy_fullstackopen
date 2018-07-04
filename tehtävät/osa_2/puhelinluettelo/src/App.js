@@ -40,27 +40,44 @@ class App extends React.Component {
       number: this.state.newNumber
     }
 
-    if(this.state.persons.some(person => person.name === this.state.newName)){
-      alert('Name already exists!')
-      return
+    let updateable = undefined
+
+    if(this.state.persons.some(person => {
+        updateable = person
+        return person.name === this.state.newName
+      })) {
+        if(window.confirm("This name already exists! " +
+          "Do you want to update the phonenumber?")){
+            updateable.number = this.state.newNumber
+            personService.update(updateable.id, {updateable})
+              .then(result => {
+                this.setState({
+                  persons: this.state.persons
+                    .filter(person => person.id !== result.id)
+                    .concat(result),
+                  newName: '',
+                  newNumber: ''
+                })
+              })
+          }
+        return
     }
 
     personService.create(nameToAdd)
       .then(result => {
-        console.log(result)
         this.setState({
-          persons: this.state.persons.concat(result)
+          persons: this.state.persons.concat(result),
+          newName: '',
+          newNumber: ''
         })
       })
   }
 
-  // TODO: Jatka tästä tehtävää 2.16
   removePerson = (id) => {
     return (() => {
       if(window.confirm("Do you really want to delete this person?")){
         personService.remove(id)
           .then(result => {
-            console.log(result)
             console.log('Person with id ' + id + ' was removed from the server')
             this.setState({
               persons: this.state.persons.filter(person => person.id !== id)
