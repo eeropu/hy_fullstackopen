@@ -8,7 +8,8 @@ class App extends React.Component {
       persons: [],
       newName: '',
       newNumber: '',
-      search: ''
+      search: '',
+      notification: null
     }
   }
 
@@ -56,9 +57,13 @@ class App extends React.Component {
                     .filter(person => person.id !== result.id)
                     .concat(result),
                   newName: '',
-                  newNumber: ''
+                  newNumber: '',
+                  notification: 'Number updated!'
                 })
               })
+            setTimeout(() => {
+              this.setState({notification: null})
+            }, 5000)
           }
         return
     }
@@ -68,9 +73,13 @@ class App extends React.Component {
         this.setState({
           persons: this.state.persons.concat(result),
           newName: '',
-          newNumber: ''
+          newNumber: '',
+          notification: 'New person added!'
         })
       })
+    setTimeout(() => {
+      this.setState({notification: null})
+    }, 5000)
   }
 
   removePerson = (id) => {
@@ -78,12 +87,15 @@ class App extends React.Component {
       if(window.confirm("Do you really want to delete this person?")){
         personService.remove(id)
           .then(result => {
-            console.log('Person with id ' + id + ' was removed from the server')
             this.setState({
-              persons: this.state.persons.filter(person => person.id !== id)
+              persons: this.state.persons.filter(person => person.id !== id),
+              notification: 'Person removed!'
             })
           })
       }
+      setTimeout(() => {
+        this.setState({notification: null})
+      }, 5000)
     })
   }
 
@@ -93,6 +105,7 @@ class App extends React.Component {
 
     return (
       <div>
+        <Notification message={this.state.notification} />
         <h2>Puhelinluettelo</h2>
         <AddPerson
           addPerson={this.addPerson}
@@ -152,6 +165,12 @@ const Names = ({persons, search, removePerson}) => {
       </ul>
     </div>
   )
+}
+
+const Notification = (props) => {
+  return props.message === null
+  ? <div></div>
+  : <div className="notification">{props.message}</div>
 }
 
 export default App
