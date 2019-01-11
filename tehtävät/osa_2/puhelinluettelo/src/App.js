@@ -54,7 +54,7 @@ class App extends React.Component {
               .then(result => {
                 this.setState({
                   persons: this.state.persons
-                    .filter(person => person.id !== result.id)
+                    .filter(person => person.id !== updateable.id)
                     .concat(result),
                   newName: '',
                   newNumber: '',
@@ -70,6 +70,7 @@ class App extends React.Component {
 
     personService.create(nameToAdd)
       .then(result => {
+        console.log(result)
         this.setState({
           persons: this.state.persons.concat(result),
           newName: '',
@@ -147,6 +148,7 @@ const Search = ({search, updateSearch}) => (
 )
 
 const Names = ({persons, search, removePerson}) => {
+  console.log(persons)
   const filtered = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
   const data = filtered.map(person => {
     return (
