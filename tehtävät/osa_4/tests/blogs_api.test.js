@@ -81,12 +81,13 @@ describe('POST /api/blogs', () => {
     const response = await api.get('/api/blogs')
     const amount = response.body.length
 
-    await api.post('/api/blogs', {
-      title: 'testi',
-      author: 'Erkki esimerkki',
-      url: 'testi.example.com/moi',
-      likes: 5
-    })
+    await api.post('/api/blogs')
+      .send({
+        title: 'testi',
+        author: 'Erkki esimerkki',
+        url: 'testi.example.com/moi',
+        likes: 5
+      })
 
     const newResponse = await api.get('/api/blogs')
     expect(newResponse.body.length).toBe(amount + 1)
@@ -106,9 +107,68 @@ describe('POST /api/blogs', () => {
 
     expect(response.body.title).toEqual('testi')
     expect(response.body.author).toEqual('Erkki esimerkki')
+    expect(response.body.likes).toBe(5)
 
     const getResponse = await api.get('/api/blogs')
     expect(getResponse.body).toContainEqual(response.body)
+  })
+
+  test('When amount of likes is not included, it defaults to 0', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .send({
+        title: 'Likes default to zero',
+        author: 'test',
+        url: 'likes.default.to/zero',
+      })
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.likes).toBe(0)
+  })
+
+  test('When title is not included, returns status 400', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .send({
+        author: 'test',
+        url: 'bad.request.code/400',
+        likes: 5
+      })
+      .expect(400)
+  })
+
+  test('When url is not included, returns status 400', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .send({
+        author: 'test',
+        title: 'testing node api',
+        likes: 5
+      })
+      .expect(400)
+  })
+})
+
+describe('DELETE method', () => {
+  test('removes blog with the given id', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .send({
+        author: 'test',
+        title: 'testing node api',
+        url: 'bad.request.code/400',
+        likes: 5
+      })
+
+    const id = response.body._id
+    await api
+      .delete('/api/blogs/' + id)
+      .expect(204)
+  })
+
+  test('returns 400 when id is incorrect', async () => {
+    await api.delete('/api/blogs/test').expect(400)
   })
 })
 
