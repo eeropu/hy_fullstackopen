@@ -2,6 +2,7 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
   {
@@ -108,9 +109,6 @@ describe('POST /api/blogs', () => {
     expect(response.body.title).toEqual('testi')
     expect(response.body.author).toEqual('Erkki esimerkki')
     expect(response.body.likes).toBe(5)
-
-    const getResponse = await api.get('/api/blogs')
-    expect(getResponse.body).toContainEqual(response.body)
   })
 
   test('When amount of likes is not included, it defaults to 0', async () => {
@@ -169,6 +167,51 @@ describe('DELETE method', () => {
 
   test('returns 400 when id is incorrect', async () => {
     await api.delete('/api/blogs/test').expect(400)
+  })
+})
+
+describe('Adding new user', () => {
+  beforeAll(async () => {
+    await User.remove({})
+  })
+
+  test('does not work if password is less than 3 characters long', async () => {
+    const response = await api.post('/api/users')
+      .send({
+        name: 'Tony the tester',
+        username: 'testing',
+        password: 'ab',
+        major: false
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+
+    expect(response.body).toEqual('Password is too short!')
+  })
+
+  test('does not work if username is already in use', async () => {
+    await api.post('/api/users')
+      .send({
+        name: 'Tony the tester',
+        username: 'duplicates',
+        password: 'abcd',
+        major: false
+      })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const duplicate = await api.post('/api/users')
+      .send({
+        name: 'Tony the tester',
+        username: 'duplicates',
+        password: 'abcd',
+        major: false
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(duplicate.body).toEqual('Username is already in use!')
   })
 })
 

@@ -18,8 +18,22 @@ mongoose
     console.log(err)
   })
 
+const extractToken = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.token = authorization.substring(7)
+  }
+  next()
+}
+
+app.use(extractToken)
+
+const loginRouter = require('./controllers/login')
 const blogsRouter = require('./controllers/blog')
+const usersRouter = require('./controllers/user')
+app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
 
 const server = http.createServer(app)
 
